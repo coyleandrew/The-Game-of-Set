@@ -7,7 +7,7 @@ Install curses
 
 Run the app
 > ruby main.rb
-
+`
 
 # Objects
 Common object definitions important for module interop.
@@ -39,5 +39,5 @@ Common object definitions important for module interop.
 ## UI
 - Score #=> int 0...
 - Game #=> Game
-> Eepresents the collection of sets of 3 cards won by the player.
+> Represents the collection of sets of 3 cards won by the player.
 - Won #=> Card[][]
