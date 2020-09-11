@@ -1,6 +1,14 @@
 # Team-Three-Project-2
 The Game of Set
 
+# Installation
+Install curses
+> gem install curses
+
+Run the app
+> ruby main.rb
+
+
 # Objects
 Common object definitions important for module interop.
 
