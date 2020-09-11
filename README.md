@@ -2,12 +2,11 @@
 The Game of Set
 
 # Installation
-Install curses
-> gem install curses
+Install ncurses
+> gem install ncurses-ruby
 
 Run the app
 > ruby main.rb
-`
 
 # Objects
 Common object definitions important for module interop.
