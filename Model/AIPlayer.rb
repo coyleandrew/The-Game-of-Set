@@ -18,9 +18,13 @@ class AIPlayer
             @sleepTime = 10
         else
             @sleepTime = 5
-
+        end
+    end
+        
     # Sleeps for a set amount of time (depending on difficulty) then,
     # finds and returns a set
     def executeTurn
         sleep(@sleepTime)
         # TODO: Write FindSet() method
+    end
+end
