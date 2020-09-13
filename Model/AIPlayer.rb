@@ -1,4 +1,4 @@
-=being
+=begin
 This class creates AI players for the game of set.
 Each object should be constructed using one string paramter @difficulty
 which can either be "Easy", "Medium", or "Hard".
