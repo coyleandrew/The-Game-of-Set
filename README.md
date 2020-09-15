@@ -40,3 +40,7 @@ Common object definitions important for module interop.
 - Game #=> Game
 > Represents the collection of sets of 3 cards won by the player.
 - Won #=> Card[][]
+
+# Modules
+
+## UI
