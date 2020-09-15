@@ -16,7 +16,8 @@ class IsASet
     is_set(cards_array)
   end
 
-  def is_set(cards_array)
+  def self.is_set(cards_array)
+
     attribute_names.each do |element|
       result_array = cards_array.map(&element)
       if !all_Same?(result_array)

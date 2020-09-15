@@ -24,6 +24,7 @@ class UI
 
     ## Hand
     Ncurses.init_pair(3, 7, 0)
+    Ncurses.init_pair(4, 0, 0)
 
     # Removing normal input
     Ncurses.noecho
@@ -44,9 +45,9 @@ class UI
     return @menu.prompt
   end
 
-  def newGame (game)
+  def newGame (game, player)
     # init the game view    
-    board = Board.new(@win, game)
+    board = Board.new(@win, game, player)
     board.play
   end
 

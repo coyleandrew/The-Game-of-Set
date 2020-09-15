@@ -19,10 +19,6 @@ begin
 
     loop do
         controller.run
-
-        # TODO: Process inputs as game behavior
-
-        # Game doesn't exist yet, just exit.
         return
     end
 ensure

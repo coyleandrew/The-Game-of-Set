@@ -1,3 +1,5 @@
+require "Player"
+
 class GameController
     def initialize (game, ui)
         @game = game
@@ -6,8 +8,8 @@ class GameController
 
         # Play the intro animation
         # Swamp these comments to skip the menu and jump stright to the game
-        @ui.intro
-        ##newGame
+        #@ui.intro
+        newGame
     end
 
     # Main game loop
@@ -31,7 +33,9 @@ class GameController
 
     def newGame
         @game.newGame
-        @ui.newGame @game
+        player = Player.new "Test Player", [], 20
+        @ui.newGame @game, player
+
         puts "Controller got control back from newGame"
     end
 

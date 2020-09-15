@@ -23,8 +23,8 @@ class Game
         @deck.shuffle!
 
         # Move the first 12 cards from the deck to the board
-        @cards = @deck[0...16]
-        @deck = @deck.drop 16
+        @cards = @deck[0...12]
+        @deck = @deck.drop 12
     end
 
     attr_accessor :score
