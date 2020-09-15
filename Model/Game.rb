@@ -1,3 +1,5 @@
+require "Card"
+
 class Game
     def initialize
         reset
@@ -5,7 +7,7 @@ class Game
 
     def reset
         @deck = Array.new(81)
-        @deck = []
+        @cards = []
     end
 
     def newGame
@@ -21,12 +23,12 @@ class Game
         @deck.shuffle!
 
         # Move the first 12 cards from the deck to the board
-        @board = @deck[0...16]
+        @cards = @deck[0...16]
         @deck = @deck.drop 16
     end
 
     attr_accessor :score
     attr_accessor :deck
-    attr_accessor :board
+    attr_accessor :cards
 
 end

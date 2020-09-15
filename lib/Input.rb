@@ -4,5 +4,5 @@ class Input
     LEFT = 68 #=> Ncurses::KEY_LEFT
     RIGHT = 67 #=> Ncurses::KEY_RIGHT
     ENTER = 10 #=> Ncurses::KEY_ENTER
-    ESCAPE = 27 #=> Ncurses::ESCAPE
+    ESCAPE = 113 #=> Ncurses::ESCAPE
 end

@@ -5,7 +5,9 @@ class GameController
         @running = true
 
         # Play the intro animation
+        # Swamp these comments to skip the menu and jump stright to the game
         @ui.intro
+        ##newGame
     end
 
     # Main game loop
@@ -30,6 +32,7 @@ class GameController
     def newGame
         @game.newGame
         @ui.newGame @game
+        puts "Controller got control back from newGame"
     end
 
     def endGame

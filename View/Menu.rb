@@ -30,15 +30,15 @@ class Menu
 
         printArray x, y, @team, Ncurses.COLOR_PAIR(0)
         @win.refresh
-        sleep(1)
+        sleep(0.25)
         y += @team.length + 1
         printArray x, y, @presents, Ncurses.COLOR_PAIR(0)
         @win.refresh
-        sleep(1.5)
+        sleep(0.5)
         y += @presents.length + 1
         printArray x, y, @logo, Ncurses.COLOR_PAIR(0)
         @win.refresh
-        sleep(2)
+        sleep(1.5)
 
         # slide the logo up
         loop do
@@ -97,9 +97,9 @@ class Menu
             x = @left + ((@width - item.length) / 2).floor
 
             if i == selected
-                @win.attrset(Ncurses.COLOR_PAIR(1))
+                @win.attrset(Ncurses.COLOR_PAIR(2))
             else
-                @win.attrset(Ncurses.COLOR_PAIR(0))
+                @win.attrset(Ncurses.COLOR_PAIR(1))
             end
 
             @win.move(y, x)

@@ -2,6 +2,7 @@
 # I do not know the convention for handeling includes
 $LOAD_PATH << File.join(File.dirname(__FILE__), "Model")
 $LOAD_PATH << File.join(File.dirname(__FILE__), "Controller")
+$LOAD_PATH << File.join(File.dirname(__FILE__), "View")
 $LOAD_PATH << File.join(File.dirname(__FILE__), "lib")
 
 require "UI"
