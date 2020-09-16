@@ -34,4 +34,4 @@ card18 = Card.new 1, 0, 2, 0
 deck = [card7, card8, card9, card10, card11, card12, card13, card14,
         card15, card16, card17, card18]
 
-puts IsASet.sets(deck).to_s
+puts IsASet.sets(deck)[0][0].to_s()
