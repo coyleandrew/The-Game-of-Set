@@ -10,7 +10,6 @@ class IsASet
     ATTRIBUTES.keys
   end
 
-
   def self.a_set(card1,card2,card3)
     cards_array = [card1,card2,card3]
     is_set(cards_array)
@@ -26,7 +25,6 @@ class IsASet
     return true
   end
 
-
   def self.all_Same?(array)
     array.uniq.size <= 1
   end
@@ -34,4 +32,20 @@ class IsASet
   def self.all_Diff?(array)
     array.uniq.size == array.size
   end
+
+  def self.sets(deck)
+    sets = []
+    for i in 0...10
+      for j in (i+1)...11
+        for k in (j+1)...12
+          if a_set(deck[i],deck[j],deck[k])
+            cards_array = [deck[i],deck[j],deck[k]]
+            sets << cards_array
+          end
+        end
+      end
+    end
+    return sets
+  end
+
 end
