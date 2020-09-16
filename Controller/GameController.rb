@@ -1,4 +1,5 @@
 require "Player"
+require "AIPlayer"
 
 class GameController
     def initialize (game, ui)
@@ -7,7 +8,7 @@ class GameController
         @running = true
 
         # Play the intro animation
-        # Swamp these comments to skip the menu and jump stright to the game
+        # Swap these comments to skip the menu and jump stright to the game
         #@ui.intro
         newGame
     end
@@ -43,7 +44,11 @@ class GameController
     end
 
     def play
-        player = Player.new "Player 1", [], 0
+        # create the player
+        player = Player.new  @game.playerName, [], 0
+        # create the AIs
+        @game.players.times { |i| @game.AI[i] = AIPlayer.new @game.difficulty, @game }
+        # start the game
         @ui.play @game, player
     end
 

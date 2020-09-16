@@ -62,8 +62,6 @@ class Menu
     def draw_menu items
         @win.clear
 
-        printArray @left, @top, @logo, Ncurses.COLOR_PAIR(0)
-
         draw_options @selected, items
 
         while((ch = @win.getch()) != Ncurses::KEY_F1) do
@@ -94,7 +92,16 @@ class Menu
         "Exit "
     ].freeze
 
+    def menu_position (index, text)
+        y = @logo.length + 3 + index * 2
+        x = @left + ((@width - text.length) / 2).floor
+        return [x, y]
+    end
+
     def draw_options (selected, items)
+        @win.clear
+
+        printArray @left, @top, @logo, Ncurses.COLOR_PAIR(0)
         
         y = @logo.length + 3
         items.each.with_index(0) do |item, i|
