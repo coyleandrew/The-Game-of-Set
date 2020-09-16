@@ -6,13 +6,15 @@ which can either be "Easy", "Medium", or "Hard".
 require "Difficulty"
 
 #TODO: Inhert from Player so score will work
-class AIPlayer
+class AIPlayer < Player
     # @difficulty: difficulty level of the AI set by the player
     # @sleepTime: the time the AI should sleep during it's turn
     attr_accessor :difficulty 
     @sleepTime
 
-    def initialize(difficulty, game)
+    def initialize(name, difficulty, game)
+        super(name)
+
         @difficulty, @game = difficulty, game
 
         if @difficulty == Difficulty::EASY
@@ -32,10 +34,12 @@ class AIPlayer
         #sleep locks the thread, not going to work
         #new plan, time is the total seconds since the game started
         #you'll need to start tracking when your last turn was and do turn work if time - last > @sleepTime
-        # TODO: Write FindSet() method
-        puts "AI TAKES TURN"
 
-        #TODO:
-        #you will be able to use @game.claim(self, set) to claim a set for this player
+        # TODO: Write FindSet() method
+        set = @game.cards.sample 3
+
+        if set.length == 3
+            @game.claim!(self, set)
+        end
     end
 end

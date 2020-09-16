@@ -2,16 +2,19 @@
 The Game of Set
 
 # Installation
-Install ncurses
-> gem install ncurses-ruby
+Install dependencies from Gemfile:
+> bundle install
 
-Run the app
+Or install dependencies manually:
+Install ncurses
+> gem install ncurses-ruby \
+> gem install scanf
+
+# Usage
 > ruby main.rb
 
 # Objects
 Common object definitions important for module interop.
-
-> Some adjustments will be needed to accomidate multiple players, i.e. the AI players.
 
 ## Card
 - Shape #=> int 0,1,2
@@ -29,18 +32,33 @@ Common object definitions important for module interop.
     - 2 Outlined
 
 ## Game
-> The durration since the start of play.
-- Time #=> float 0...
+Game setup and running state. Objects that need to invoke game behaviors should do so through the Game reference.
+> Collection of AI players.
+- AI
+> Cards represents the cards in play. Card objects are removed from the Deck and added to Cards through the course of play.
+- Cards #=> Card[]
 - Deck #=> Card[]
-> Represents the cards in play. Cards are moved from the Desk to the Board through the course of play.
-- Board #=> Card[]
+- Difficulity #=> 0,1,2 : Easy, Medium, Difficult
+> Number of AI players
+- Players  #=> 0..3
+- PlayerName #=> "Player 1" or player specified
+> The durration since the start of play in seconds.
+- Time #=> float 0...
+
+## Player
+Object for the human player and AI players.
+- Name 
+> Sets of cards won by the player
+- Sets 
+- Score
 
 ## UI
-- Score #=> int 0...
-- Game #=> Game
-> Represents the collection of sets of 3 cards won by the player.
-- Won #=> Card[][]
+Manages the terminal state and invokes views.
 
-# Modules
+###
+Methods
+- Message
+> Displays a message on the game view.
 
-## UI
+## GameController
+Behavior orchistration object. Manages the highest level of running the game

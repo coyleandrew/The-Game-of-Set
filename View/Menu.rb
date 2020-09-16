@@ -142,4 +142,6 @@ class Menu
             @win.addstr str
         end
     end
+
+    attr_accessor :selected
 end

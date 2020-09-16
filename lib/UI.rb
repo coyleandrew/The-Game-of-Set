@@ -2,6 +2,7 @@ require "ncurses"
 require "Graphics"
 require "Menu"
 require "Board"
+require "Score"
 require "NewGame"
 
 class UI
@@ -42,7 +43,7 @@ class UI
     @menu.intro
   end
 
-  def prompt
+  def menu
     return @menu.prompt
   end
 
@@ -52,14 +53,23 @@ class UI
     # init the new game view
   end
   
-  def play (game, player)
+  def play (game)
     # init the game view    
-    board = Board.new(@win, game, player)
+    board = Board.new @win, game, game.player
     board.play
+  end
+
+  def score (game)
+    score = Score.new @win
+    score.show game
   end
 
   def claim(cards)
     #TODO: Popup showing the claim
+  end
+
+  def message msg
+    board.message msg
   end
 end
 

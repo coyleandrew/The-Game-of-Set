@@ -1,0 +1,15 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ncurses-ruby (1.2.4)
+    scanf (1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ncurses-ruby
+  scanf
+
+BUNDLED WITH
+   2.1.4

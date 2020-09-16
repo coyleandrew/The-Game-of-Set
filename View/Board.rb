@@ -41,7 +41,7 @@ class Board
 
 
 
-      score = "Score[#{@player.display_score}]"
+      score = "Score[#{@player.score}]"
       @win.move 0, @winX - score.length
       @win.attrset(Ncurses.COLOR_PAIR(2))
       @win.addstr score
@@ -87,12 +87,24 @@ class Board
       @win.clear
       message "Use the arrow keys to navigate and enter to select a card."
       printCards
+      # continue @win.getch() twice per second.
       Ncurses.halfdelay 5
-      time = 0.0
 
       while((ch = @win.getch()) != Ncurses::KEY_F1) do
+        # escape for an empty deck
+        # TODO: contains set replaces @game.cards.length
+        if @game.deck.length == 0 && @game.deck.length == 0
+          return
+        end
+
         pos = @cursor
-        time += 0.5
+        # advance time by the expect half second.
+        @game.time += 0.5
+
+        # Half second refresh cards. Has a nice side effect of animating card claims.
+        printCards
+        @game.deal
+
 
         case(ch)
         when Input::DOWN
@@ -140,25 +152,15 @@ class Board
 
           case @hand.length
           when 3
-            if @player.add?(@hand)
+            if @game.claim! @player, @hand
               # this is a set
-              # nil the cards in play so they leave a gap
-              @hand.each do |card|
-                cIndex = @game.cards.index card
-                @game.cards[cIndex] = nil
-              end
               @hand.clear
 
               @win.clear
               message "Set found!"
               printCards
-              # feedback that the cards are chaning
-              sleep(0.5)
-              #deck is already shuffled
-              @game.cards.map! { |x| x || @game.deck.pop }
-              message "Select 3 cards. #{@game.deck.length} left"
-              printCards
             else
+              @hand.clear
               message "That's not a set. Hints?"
             end
 
@@ -174,9 +176,8 @@ class Board
         when Input::ESCAPE
           return
         else
-          ## let the AIs
-          @win.move 0, 0
-          @game.AI.each { |ai| ai.executeTurn time }
+          ## let the AIs do
+          @game.updateAI
         end
 
         # use this for debugging keys
@@ -190,6 +191,8 @@ class Board
     def printCards
       draw_header
       cards = @game.cards
+      @win.move 0, 0
+      @win.addstr @game.deck.length.to_s
 
       winX = Ncurses.getmaxx(@win)
       winY = Ncurses.getmaxy(@win)

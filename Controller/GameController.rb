@@ -6,17 +6,15 @@ class GameController
         @game = game
         @ui = ui
         @running = true
-
-        # Play the intro animation
-        # Swap these comments to skip the menu and jump stright to the game
-        #@ui.intro
-        newGame
     end
 
     # Main game loop
     def run
+        # Disable animated intro for the sake of dev sanity
+        #@ui.intro
+
         loop do
-            command = @ui.prompt
+            command = @ui.menu
             case command
             when "Exit "
                 quit
@@ -34,6 +32,7 @@ class GameController
 
     def newGame
         #init a new game model
+        @game.reset
         @game.newGame
 
         # prompt to configure the game
@@ -45,11 +44,13 @@ class GameController
 
     def play
         # create the player
-        player = Player.new  @game.playerName, [], 0
+        @game.player = Player.new @game.playerName
         # create the AIs
-        @game.players.times { |i| @game.AI[i] = AIPlayer.new @game.difficulty, @game }
-        # start the game
-        @ui.play @game, player
+        @game.players.times { |i| @game.AI[i] = AIPlayer.new "AI #{i}", @game.difficulty, @game }
+        # play the game
+        @ui.play @game
+        # show the score
+        @ui.score @game
     end
 
     def endGame

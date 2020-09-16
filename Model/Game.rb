@@ -12,6 +12,8 @@ class Game
         @difficulty = 0
         @playerName = "Player 1"
         @players = 1
+        @time = 0
+        @player = nil
     end
 
     def newGame
@@ -30,15 +32,44 @@ class Game
         @deck = @deck.drop 12
     end
 
-    def claim (player, set)
-        #TODO: Do the claim work
+    # claim a collection of cards as a set.
+    # Nil's Cards cards if removed from play as a result of the claim
+    # Returns true if the set is A Set
+    def claim! (player, set)
+        if IsASet.is_set set
+
+            # nil claimed cards
+            set.each do |card|
+                @cards[@cards.index card] = nil
+            end
+
+            # award player the set
+            player.add(set)
+
+            # return result
+            return true
+        end
+
+        return false
+    end
+
+    def updateAI
+        # TODO: Stop the AIs from going all at once
+        @AI.each { |ai| ai.executeTurn @time }
+    end
+
+    # Fill in missing cards
+    def deal
+        @cards.map! { |x| x || @deck.pop }
     end
 
     attr_accessor :difficulty
     attr_accessor :players
+    attr_accessor :player
     attr_accessor :playerName
     attr_accessor :deck
     attr_accessor :cards
     attr_accessor :AI
+    attr_accessor :time
 
 end
