@@ -29,9 +29,9 @@ class UI
 
     # Removing normal input
     Ncurses.noecho
-    Ncurses.stdscr.intrflush(false)
+    Ncurses.stdscr.intrflush(true)
     Ncurses.curs_set 0
-    Ncurses.stdscr.nodelay(false)
+    Ncurses.stdscr.nodelay(true)
 
     @win = Ncurses.stdscr
     @menu = Menu.new(@win)

@@ -87,9 +87,12 @@ class Board
       @win.clear
       message "Use the arrow keys to navigate and enter to select a card."
       printCards
+      Ncurses.halfdelay 5
+      time = 0.0
 
       while((ch = @win.getch()) != Ncurses::KEY_F1) do
         pos = @cursor
+        time += 0.5
 
         case(ch)
         when Input::DOWN
@@ -170,6 +173,10 @@ class Board
           printCards
         when Input::ESCAPE
           return
+        else
+          ## let the AIs
+          @win.move 0, 0
+          @game.AI.each { |ai| ai.executeTurn time }
         end
 
         # use this for debugging keys
