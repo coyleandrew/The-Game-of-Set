@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require "IsASet"
+
 # initialize player and count the successful sets
 class Player
   attr_reader :name, :sets, :score

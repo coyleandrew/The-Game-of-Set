@@ -2,6 +2,7 @@ require "ncurses"
 require "Graphics"
 require "Menu"
 require "Board"
+require "NewGame"
 
 class UI
   def initialize ()
@@ -45,7 +46,13 @@ class UI
     return @menu.prompt
   end
 
-  def newGame (game, player)
+  def newGame! (game)
+    newGameMenu = NewGame.new @win
+    return newGameMenu.prompt! game
+    # init the new game view
+  end
+  
+  def play (game, player)
     # init the game view    
     board = Board.new(@win, game, player)
     board.play

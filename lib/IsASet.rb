@@ -2,11 +2,11 @@ class IsASet
   ATTRIBUTES = {
       :number => ["1","2","3"],
       :shape  => ["diamond","squiggle","oval"],
-      :shading => ["solid","striped","open"],
+      :fill => ["solid","striped","outlined"],
       :color => ["red","green","purple"]
   }
 
-  def attribute_names
+  def self.attribute_names
     ATTRIBUTES.keys
   end
 
@@ -17,6 +17,7 @@ class IsASet
   end
 
   def self.is_set(cards_array)
+    return true
 
     attribute_names.each do |element|
       result_array = cards_array.map(&element)

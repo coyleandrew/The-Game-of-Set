@@ -55,30 +55,34 @@ class Menu
         end
     end
 
-    def prompt()
+    def prompt
+        draw_menu Menu::MENU_ITEMS
+    end
+
+    def draw_menu items
         @win.clear
 
         printArray @left, @top, @logo, Ncurses.COLOR_PAIR(0)
 
-        drawMenu(@selected)
+        draw_options @selected, items
 
         while((ch = @win.getch()) != Ncurses::KEY_F1) do
 
             case(ch)
             when Input::DOWN
-                if @selected + 1 < Menu::MENU_ITEMS.length
-                    drawMenu @selected += 1
+                if @selected + 1 < items.length
+                    draw_options @selected += 1, items
                 else
-                    drawMenu @selected = 0
+                    draw_options @selected = 0, items
                 end
             when Input::UP
                 if @selected -1 >= 0
-                    drawMenu @selected -= 1
+                    draw_options @selected -= 1, items
                 else
-                    drawMenu @selected = Menu::MENU_ITEMS.length - 1
+                    draw_options @selected = items.length - 1, items
                 end
             when Input::ENTER
-                return Menu::MENU_ITEMS[@selected]
+                return items[@selected]
             end
         end
         
@@ -90,10 +94,10 @@ class Menu
         "Exit "
     ].freeze
 
-    def drawMenu(selected)
+    def draw_options (selected, items)
         
         y = @logo.length + 3
-        Menu::MENU_ITEMS.each.with_index(0) do |item, i|
+        items.each.with_index(0) do |item, i|
             x = @left + ((@width - item.length) / 2).floor
 
             if i == selected

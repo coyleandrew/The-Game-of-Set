@@ -32,11 +32,19 @@ class GameController
     end
 
     def newGame
+        #init a new game model
         @game.newGame
-        player = Player.new "Test Player", [], 20
-        @ui.newGame @game, player
 
-        puts "Controller got control back from newGame"
+        # prompt to configure the game
+        command = @ui.newGame! @game
+        if(command == "Play")
+            play
+        end
+    end
+
+    def play
+        player = Player.new "Player 1", [], 0
+        @ui.play @game, player
     end
 
     def endGame
