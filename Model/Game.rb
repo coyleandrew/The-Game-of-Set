@@ -13,7 +13,7 @@ class Game
     def newGame
         # Generate the deck, one of each
         @deck = Array.new(81)
-        @desk.fill { |card|  }
+        #@desk.fill { |card|  }
         for i in 0...81
             # This is basically a binary table that runs from 0,0,0,0 to 2,2,2,2
             # Number has a +1 because it's base 1
