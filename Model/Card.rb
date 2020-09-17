@@ -7,6 +7,10 @@ class Card
         @fill = shading
     end
 
+    def to_s()
+        "Shape: %s, Color: %s, Number: %s, Fill: %s" % [@shape, @color, @number, @fill]
+    end
+
     attr_reader :shape
   
     attr_reader :number

@@ -33,13 +33,15 @@ class IsASet
     array.uniq.size == array.size
   end
 
-  def self.sets(deck)
+  # Iterates through the entire board, finds sets, and
+  # returns an m x 3 matrix containing all the sets
+  def self.sets(cards)
     sets = []
-    for i in 0...10
-      for j in (i+1)...11
-        for k in (j+1)...12
-          if a_set(deck[i],deck[j],deck[k])
-            cards_array = [deck[i],deck[j],deck[k]]
+    for i in 0...(cards.length - 2)
+      for j in (i+1)...(cards.length - 1)
+        for k in (j+1)...(cards.length)
+          if a_set(cards[i],cards[j],cards[k])
+            cards_array = [cards[i],cards[j],cards[k]]
             sets << cards_array
           end
         end
