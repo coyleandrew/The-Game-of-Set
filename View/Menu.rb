@@ -118,7 +118,7 @@ class Menu
 
     # Position of a single menu item
     def menu_position (index, text)
-        y = get_header.length + 3 + index * 2
+        y = get_header.length + 2 + index * 2
         x = @left + ((@width - text.length) / 2).floor
         return [x, y]
     end

@@ -28,7 +28,8 @@ class NewGame < Menu
 
                 # remove the current player name and redraw the menu with a blank
                 game.playerName = "__________"
-                draw_options -1, (generate_menu game)
+                # -1 selects nothing
+                draw -1, get_items, get_header
                 
                 # switch to text entry mode
                 Ncurses.echo

@@ -46,7 +46,7 @@ class GameController
         # create the player
         @game.player = Player.new @game.playerName
         # create the AIs
-        @game.players.times { |i| @game.AI[i] = AIPlayer.new "AI #{i}", @game.difficulty, @game }
+        @game.players.times { |i| @game.AI[i] = AIPlayer.new "AI #{i + 1}", @game.difficulty, @game }
         # play the game
         @ui.play @game
         # show the score
