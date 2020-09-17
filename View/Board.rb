@@ -213,7 +213,7 @@ class Board
       draw_header
       cards = @game.cards
       @win.move 0, 0
-      @win.addstr @game.deck.length.to_s
+      @win.addstr @game.sets.length.to_s
 
       winX = Ncurses.getmaxx(@win)
       winY = Ncurses.getmaxy(@win)

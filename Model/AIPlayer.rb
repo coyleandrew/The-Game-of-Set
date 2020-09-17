@@ -37,7 +37,7 @@ class AIPlayer < Player
         ## return if sleeping
         lapsed = time - @last
         @last += time
-        if lapsed < rand @sleepTime
+        if lapsed < rand(@sleepTime)
             # not time to claim yet
             return
         end

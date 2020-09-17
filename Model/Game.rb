@@ -1,4 +1,5 @@
 require "Card"
+require "IsASet"
 
 class Game
     def initialize
@@ -28,10 +29,11 @@ class Game
         # this is neat, shuffle is a thing you can just do
         @deck.shuffle!
 
-        # Move the first 12 cards from the deck to the board
-        @cards = @deck[0...12]
-        @deck = @deck.drop 12
-        @sets = IsASet.sets @cards
+        # Establish the play surface
+        @cards = Array.new 12
+
+        # deal the first cards
+        deal
     end
 
     # claim a collection of cards as a set.
@@ -70,7 +72,7 @@ class Game
         @cards.map! { |x| x || @deck.pop }
 
         # recompute sets
-        @game.sets = IsASet.sets @cards
+        @sets = IsASet.sets @cards
     end
 
     attr_accessor :difficulty
@@ -79,6 +81,7 @@ class Game
     attr_accessor :playerName
     attr_accessor :deck
     attr_accessor :cards
+    attr_accessor :sets
     attr_accessor :AI
     attr_accessor :time
 
