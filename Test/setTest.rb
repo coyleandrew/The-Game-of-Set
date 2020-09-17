@@ -3,6 +3,7 @@ $LOAD_PATH << File.join(File.dirname(__FILE__), "../Model")
 $LOAD_PATH << File.join(File.dirname(__FILE__), "../lib")
 require "Card"
 require "IsASet"
+require "Game"
 
 puts "Testing is_set?()"
 
@@ -91,3 +92,10 @@ else
 end
 
 puts "---------------------------------------"
+
+IsASet.a_set
+
+game = Game.new
+game.newGame
+
+puts game.sets.length
