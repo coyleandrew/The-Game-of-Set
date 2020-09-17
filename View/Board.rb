@@ -88,18 +88,18 @@ class Board
       message "Use the arrow keys to navigate and enter to select a card."
       printCards
       # continue @win.getch() twice per second.
-      Ncurses.halfdelay 5
+      Ncurses.halfdelay 1
 
       while((ch = @win.getch()) != Ncurses::KEY_F1) do
         # escape for an empty deck
-        # TODO: contains set replaces @game.cards.length
-        if @game.deck.length == 0 && @game.deck.length == 0
+        # TODO: contains set replaces @game.cards.any?
+        if @game.deck.length == 0 && @game.cards.none?
           return
         end
 
         pos = @cursor
         # advance time by the expect half second.
-        @game.time += 0.5
+        @game.time += 0.1
 
         # Half second refresh cards. Has a nice side effect of animating card claims.
         printCards
@@ -176,8 +176,27 @@ class Board
         when Input::ESCAPE
           return
         else
-          ## let the AIs do
-          @game.updateAI
+          ## give the AIs a turn
+          @game.AI.each.with_index do |ai, i|
+            set = @game.updateAI ai
+            if set
+              # the ai claimed a card, draw this for the user
+              @win.clear
+              # draw board with AI selection
+              printCards set, i
+              # let it sink in for a second
+              sleep(0.05)
+              # give the cards to the AI
+              @game.claim! ai, set
+              # draw the cleared cards
+              printCards
+              sleep(0.05)
+              # draw the delt cards
+              @game.deal
+              printCards
+              sleep(0.1)
+            end
+          end
         end
 
         # use this for debugging keys
@@ -188,7 +207,9 @@ class Board
       end
     end
 
-    def printCards
+    # print the cards,
+    # highlight will draw a special color behind those cards.
+    def printCards (highlights = [], ai = nil)
       draw_header
       cards = @game.cards
       @win.move 0, 0
@@ -215,9 +236,7 @@ class Board
         selected = row - @rowStart == @cursor[0] && col - @colStart == @cursor[1]
         
         # draw the card
-        if card
-          drawCard card, y_pos, x_pos, selected
-        end
+        drawCard card, y_pos, x_pos, selected, highlights.include?(card) ? ai : nil
   
         # card position advancement
         if col + 1 > @colStart + @cols - 1
@@ -237,24 +256,36 @@ class Board
       Ncurses.refresh
     end
 
-    def drawCard card, y_pos, x_pos, selected
-      # normal frame graphic
-      frame = Graphics::UI_CARD_FRAME
-      if @hand.include?(card)
-        frame = Graphics::UI_CARD_FRAME_SELECTED
-      end
+    def drawCard card, y_pos, x_pos, selected, highlight = nil
 
-      if @hand.include?(card) && !selected
+      # pick frame graphic
+      if !card
+        frame = Graphics::UI_CARD_EMPTY
+      elsif @hand.include?(card)
+        frame = Graphics::UI_CARD_FRAME_SELECTED
+      else
+        frame = Graphics::UI_CARD_FRAME
+      end
+      
+      if(highlight)
+        @win.attrset(Ncurses.COLOR_PAIR(card.color + 20 + (10 * highlight)))
+      elsif @hand.include?(card) && !selected
         @win.attrset(Ncurses.COLOR_PAIR(1))
       elsif selected
         @win.attrset(Ncurses.COLOR_PAIR(2))
       else
         @win.attrset(Ncurses.COLOR_PAIR(4))
       end
-      # draw full card frame at position
+
+      # draw card frame at position
       frame.each.with_index(0) do |str, i|
         @win.move(y_pos + i, x_pos)
         @win.addstr str
+      end
+
+      # no card face to draw
+      if !card
+        return
       end
 
       # deal with symbol spacing and position depending on number of symbols
@@ -277,7 +308,9 @@ class Board
         Graphics::SHAPES[card.shape].each.with_index(0) do |str, index|
           @win.move(y_pos + index + 1, x)
           # selected
-          if selected
+          if highlight != nil
+            @win.attrset(Ncurses.COLOR_PAIR(card.color + 20 + (10 * highlight)))
+          elsif selected
             @win.attrset(Ncurses.COLOR_PAIR(card.color + 10))
           else
             @win.attrset(Ncurses.COLOR_PAIR(card.color))

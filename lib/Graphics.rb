@@ -79,6 +79,17 @@ class Graphics
         "[===================]"
     ].freeze
 
+    UI_CARD_EMPTY = [
+        "                     ",
+        "                     ",
+        "                     ",
+        "                     ",
+        "                     ",
+        "                     ",
+        "                     ",
+        "                     "
+    ].freeze
+
     SHAPE_FILL = [' ', '-', '#'].freeze
     
 end

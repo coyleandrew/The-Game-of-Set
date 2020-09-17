@@ -14,11 +14,12 @@ class Game
         @players = 1
         @time = 0
         @player = nil
+        @sets = []
     end
 
     def newGame
         # Generate the deck, one of each
-        @deck = Array.new(81)
+        @deck = []
 
         # This is basically a binary table that runs from 0,0,0,0 to 2,2,2,2
         # Number has a +1 because it's base 1
@@ -30,6 +31,7 @@ class Game
         # Move the first 12 cards from the deck to the board
         @cards = @deck[0...12]
         @deck = @deck.drop 12
+        @sets = IsASet.sets @cards
     end
 
     # claim a collection of cards as a set.
@@ -47,20 +49,28 @@ class Game
             player.add(set)
 
             # return result
-            return true
+            return success
         end
 
         return false
     end
 
-    def updateAI
-        # TODO: Stop the AIs from going all at once
-        @AI.each { |ai| ai.executeTurn @time }
+    # Can a set be claimed?
+    def claim? (set)
+        return IsASet.is_set set
+    end
+
+    def updateAI ai
+        return ai.executeTurn @time
     end
 
     # Fill in missing cards
     def deal
+        ## assigns nil refenreces by popping a card from the deck
         @cards.map! { |x| x || @deck.pop }
+
+        # recompute sets
+        @game.sets = IsASet.sets @cards
     end
 
     attr_accessor :difficulty

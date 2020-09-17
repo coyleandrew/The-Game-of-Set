@@ -13,7 +13,7 @@ class NewGame < Menu
             input = draw_menu generate_menu game
 
             if input.include? "Difficulity:"
-                game.difficulty = (game.difficulty + 1) % 3
+                game.difficulty = (game.difficulty + 1) % 4
             elsif input.include? "Name:"
 
                 # remove the current player name and redraw the menu with a blank
@@ -61,12 +61,14 @@ class NewGame < Menu
 
     def difficulity_to_s d
         case d
-        when 0
+        when Difficulty::EASY
             return "Easy"
-        when 1
+        when Difficulty::MEDIUM
             return "Medium"
-        else
+        when Difficulty::HARD
             return "Hard"
+        else
+            return "Impossible"
         end
     end
 

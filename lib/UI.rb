@@ -24,9 +24,26 @@ class UI
     Ncurses.init_pair(21, 2, 7)
     Ncurses.init_pair(22, 5, 7)
 
+    ## Highlight
+    Ncurses.init_pair(5, 6, 3)
+    # Highlight AI 0
+    Ncurses.init_pair(30, 1, 3)
+    Ncurses.init_pair(31, 2, 3)
+    Ncurses.init_pair(32, 5, 3)
+    # Highlight AI 1
+    Ncurses.init_pair(40, 1, 4)
+    Ncurses.init_pair(41, 2, 4)
+    Ncurses.init_pair(42, 5, 4)
+    # Highlight AI 2
+    Ncurses.init_pair(50, 1, 6)
+    Ncurses.init_pair(51, 2, 6)
+    Ncurses.init_pair(52, 5, 6)
+
     ## Hand
     Ncurses.init_pair(3, 7, 0)
     Ncurses.init_pair(4, 0, 0)
+
+
 
     # Removing normal input
     Ncurses.noecho

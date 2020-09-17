@@ -16,30 +16,33 @@ class AIPlayer < Player
         super(name)
 
         @difficulty, @game = difficulty, game
+        @last = 0
 
+        # sleep time in seconds
+        # random for a slight bit a variability
         if @difficulty == Difficulty::EASY
-            @sleepTime = 20
+            @sleepTime = (35..45)
         elsif @difficulty == Difficulty::MEDIUM
-            @sleepTime = 10
+            @sleepTime = (15..27)
+        elsif @difficulty == Difficulty::HARD
+            @sleepTime = (7..11)
         else
-            @sleepTime = 5
+            @sleepTime = (0.0..0.5)
         end
     end
         
     # Sleeps for a set amount of time (depending on difficulty) then,
     # finds and returns a set
     def executeTurn time
-        #sleep(@sleepTime)
-        #TODO:
-        #sleep locks the thread, not going to work
-        #new plan, time is the total seconds since the game started
-        #you'll need to start tracking when your last turn was and do turn work if time - last > @sleepTime
-
-        # TODO: Write FindSet() method
-        set = @game.cards.sample 3
-
-        if set.length == 3
-            @game.claim!(self, set)
+        ## return if sleeping
+        lapsed = time - @last
+        @last += time
+        if lapsed < rand @sleepTime
+            # not time to claim yet
+            return
         end
+
+        # Cheating, just take a known set
+        return @game.sets.sample
     end
 end
