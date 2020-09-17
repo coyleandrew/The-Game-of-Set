@@ -11,7 +11,7 @@ class GameController
     # Main game loop
     def run
         # Disable animated intro for the sake of dev sanity
-        #@ui.intro
+        @ui.intro
 
         loop do
             command = @ui.menu

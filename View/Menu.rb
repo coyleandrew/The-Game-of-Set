@@ -35,6 +35,7 @@ class Menu
     end
 
     def intro
+        resize
         @win.clear
         @win.move(0, 0)
 
@@ -66,7 +67,7 @@ class Menu
             @win.refresh
             sleep(0.1)
 
-            break unless y > 2
+            break unless y > @top
         end
     end
 
@@ -118,7 +119,7 @@ class Menu
 
     # Position of a single menu item
     def menu_position (index, text)
-        y = get_header.length + 2 + index * 2
+        y = get_header.length + 3 + index * 2
         x = @left + ((@width - text.length) / 2).floor
         return [x, y]
     end
