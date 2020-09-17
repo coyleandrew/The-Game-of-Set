@@ -85,7 +85,7 @@ class Board
       return @game.cards[index]
     end
 
-    # special handeling when the player needs to acknowledge a card change event
+    # special handling when the player needs to acknowledge a card change event
     # prime candidate for block args
     def deal_prompt message, highlights = [], ai = nil
       modal "#{message} Press any key to draw.", highlights, ai
@@ -212,22 +212,31 @@ class Board
         when Input::HINT
           #TODO: look at @game.sets for all sets
           #TODO: inspect @hand for selected cards
-          #TODO: push an appropiate card into @hand
+          #TODO: push an appropriate card into @hand
           #TODO: Move @cursor[x,y]
 
           # play the game for me hints
           # also requires hand by empty to start, breaks if you have a hand already
 
-          if @hand.length < 3
-            # select first, makes it possible to not select the thrid card. This matters because the player needs to do it.
-            card = @game.sets.first[@hand.length]
+          if @hand.length == 0
+            # select first, makes it possible to not select the third card. This matters because the player needs to do it.
+            card = @game.sets[0][0]
 
             # moves the highlight over the card
             @cursor = card_position card
-            
-            # auto fill the first 2. Is as if selecting it
-            if @hand.length < 2
-              @hand.push card
+            @hand.push card
+
+          elsif @hand.length == 1
+            @game.sets.each do |set|
+              if set.include?(@hand[0])
+                if set[0] == @hand[0]
+                  card = set[1]
+                else
+                  card = set[0]
+                end
+                @cursor = card_position card
+                @hand.push card
+              end
             end
           end
 
@@ -259,7 +268,7 @@ class Board
       if set
         # the ai claimed a card, draw this for the user
         
-        # make the player accpet it if not on impossible mode
+        # make the player accept it if not on impossible mode
         modal "#{ai.name} found a set! Press any key to continue.", set, i
 
         # give the cards to the AI
@@ -318,7 +327,7 @@ class Board
         end
   
         
-        # set the cursor past the cards, usefull when finished
+        # set the cursor past the cards, useful when finished
         @win.move(y_pos + @cardH + 1, 0)
         @win.clrtoeol
       end
