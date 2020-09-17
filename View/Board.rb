@@ -239,6 +239,7 @@ class Board
                 end
                 @cursor = card_position card
                 @hand.push card
+                break
               end
             end
           end
