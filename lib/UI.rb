@@ -4,6 +4,7 @@ require "Menu"
 require "Board"
 require "Score"
 require "NewGame"
+require "Credits"
 
 class UI
   def initialize ()
@@ -83,28 +84,8 @@ class UI
     score.show game
   end
 
-  def claim(cards)
-    #TODO: Popup showing the claim
+  def credits
+    credits = Credits.new @win
+    credits.show
   end
-
-  def message msg
-    board.message msg
-  end
-end
-
-class Display
-
-  def initialize(win)
-    @win = win
-    @cursor = 1
-  end
-
-  attr_accessor :cursor
-
-  def printCard(cards)
-    c = cards[@cursor]
-    return "{color:#{c.color - 10},number:#{c.number},shade:#{c.fill},shape:#{c.shape}}"
-  end
-
-  
 end

@@ -1,20 +1,23 @@
 # Team-Three-Project-2
-The Game of Set
+Team-Three-Project-2 is the game of Set, implemented in ruby, that uses [ncurses](https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/) to create an interactive game experience in a command line envionrment.
 
 # Installation
 Install dependencies from Gemfile:
 > bundle install
 
 Or install dependencies manually:
-Install ncurses
 > gem install ncurses-ruby \
 > gem install scanf
 
-# Usage
-> ruby main.rb
+# Playing
+Start the game using the main entry point.
+>  bundle exec ruby main.rb
 
-# Objects
-Common object definitions important for module interop.
+# Contributing to Team-Three-Project-2
+Team-Three-Project-2 is loosly based on the MVC pattern to manage complexity.
+
+# Models
+Models should primiarly be data objects. Some exceptions are made such as in Game where methods that maintain internal state consistancy are preferred. As an example, dealing cards.
 
 ## Card
 - Shape #=> int 0,1,2
@@ -38,6 +41,8 @@ Game setup and running state. Objects that need to invoke game behaviors should 
 > Cards represents the cards in play. Card objects are removed from the Deck and added to Cards through the course of play.
 - Cards #=> Card[]
 - Deck #=> Card[]
+> The collection of sets possible in Cards
+- Sets #=> Card[]
 - Difficulity #=> 0,1,2 : Easy, Medium, Difficult
 > Number of AI players
 - Players  #=> 0..3
@@ -52,13 +57,25 @@ Object for the human player and AI players.
 - Sets 
 - Score
 
+## AIPlayer
+Inherits from Player and implements execute_turn. It's up to the AIPlayer implementation how to use these turns. Turns occur at a rate of 10 per second.
+
+# GameController
+GameController, the only controller manages the highest level of running the game.
+
+# Views
+Views deal with printing data to the console. Most views are menus with the exception of Board which does a termendous effort to draw an interactive game experience using ASCII characters.
+
 ## UI
 Manages the terminal state and invokes views.
+-Intro
+-Menu
+-NewGame
+-Play
+-Score
 
-###
-Methods
-- Message
-> Displays a message on the game view.
+## Menu
+Menu should be used as a base class for all menus. Menus consist of a header and an array of menu items. Methods get_header and get_items should be overriden by implementors.
 
-## GameController
-Behavior orchistration object. Manages the highest level of running the game
+# SetUtil
+Utility methods that are not data or behavior but are critical to play. Such as is_set.

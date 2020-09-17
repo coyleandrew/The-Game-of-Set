@@ -18,6 +18,8 @@ class GameController
             case command
             when "Exit "
                 quit
+            when "Credits"
+                showCredits
             when "New Game"
                 newGame
             end
@@ -49,18 +51,16 @@ class GameController
         @game.players.times { |i| @game.AI[i] = AIPlayer.new "AI #{i + 1}", @game.difficulty, @game }
         # play the game
         @ui.play @game
+        # end it
+        endGame
+    end
+
+    def endGame
         # show the score
         @ui.score @game
     end
 
-    def endGame
-        #TODO: Score board
-        #TODO: Short circut the game to trigger the menu prompt
-    end
-
-    def claimSet(player, cards)
-        # TODO: IsASet
-        # TODO: UI feedback
-        # TODO: 
+    def showCredits
+        @ui.credits
     end
 end
