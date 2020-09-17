@@ -215,11 +215,12 @@ class Board
           #TODO: push an appropriate card into @hand
           #TODO: Move @cursor[x,y]
 
-          # play the game for me hints
-          # also requires hand by empty to start, breaks if you have a hand already
+          # If you have no cards selected, hints, will select for you a card that is a part of a set.
+          # If you have one card selected, hints will select the next card in a set including that card,
+          # if that card is a part of a set.
 
           if @hand.length == 0
-            # select first, makes it possible to not select the third card. This matters because the player needs to do it.
+            # if there are no cards - select one from a set
             card = @game.sets[0][0]
 
             # moves the highlight over the card
@@ -227,6 +228,8 @@ class Board
             @hand.push card
 
           elsif @hand.length == 1
+            # look for a set with the selected card
+            # then select another card in that set
             @game.sets.each do |set|
               if set.include?(@hand[0])
                 if set[0] == @hand[0]
