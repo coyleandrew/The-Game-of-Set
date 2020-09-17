@@ -43,13 +43,15 @@ class UI
     Ncurses.init_pair(3, 7, 0)
     Ncurses.init_pair(4, 0, 0)
 
-
-
     # Removing normal input
     Ncurses.noecho
     Ncurses.stdscr.intrflush(true)
     Ncurses.curs_set 0
     Ncurses.stdscr.nodelay(true)
+    
+    # stops STDIN from blocking
+    Ncurses.halfdelay 1
+
 
     @win = Ncurses.stdscr
     @menu = Menu.new(@win)

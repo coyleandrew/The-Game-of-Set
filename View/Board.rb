@@ -54,7 +54,6 @@ class Board
 
       # rest cursor
       # TODO: Follow the resize
-      @cursor = [0,0]
 
       # init screen size
       @winX = Ncurses.getmaxx(@win)
@@ -63,15 +62,18 @@ class Board
       @n_cols = (@winX / (@cardW + 1)).floor
       @n_rows = (@winY / (@cardH + 1)).floor
       
-      # preferr 4 rows of 4, fall back to 2 rows of 8
+      # wide
       if @n_rows < 4
         @rows = 2
-        @cols = 6
       else
         @rows = 4
-        @cols = 3
       end
 
+      # depends on the number of cards
+      # rows to float because integer division produces ints
+      @cols = (@game.cards.length / @rows.to_f).ceil
+
+      # centering offset
       @colStart = ((@n_cols - @cols) / 2).floor
       @rowStart = (@n_rows % @rows) / 2
 
@@ -83,28 +85,63 @@ class Board
       return @game.cards[index]
     end
 
+    # special handeling when the player needs to acknowledge a card change event
+    # prime candidate for block args
+    def deal_prompt message, highlights = [], ai = nil
+      modal "#{message} Press any key to draw.", highlights, ai
+
+      deal_more_cards
+    end
+
+    # generate some cards and resize for it
+    def deal_more_cards
+      @game.deal
+      resize
+      printCards
+    end
+
+    def modal message, highlights = [], ai = nil
+      # remove the cursor, but save it
+      cursor, @cursor = @cursor, nil
+      printCards highlights, ai
+
+      # Show the message and halt the game
+      message message
+      while(ch = @win.getch()) do
+        if ch != Input::NONE
+          break
+        end
+      end
+
+      # put the cursor back
+      @cursor = cursor
+      message ""
+      printCards highlights, ai
+    end
+
+
     def play
       @win.clear
       message "Use the arrow keys to navigate and enter to select a card."
       printCards
       # continue @win.getch() twice per second.
-      Ncurses.halfdelay 1
-
+      
       while((ch = @win.getch()) != Ncurses::KEY_F1) do
-        # escape for an empty deck
-        # TODO: contains set replaces @game.cards.any?
-        if @game.deck.length == 0 && @game.cards.none?
+        # game over condition
+        if @game.deck.length == 0 && @game.sets.none?
+          modal "Game over. Press any key to continue."
           return
+        end
+
+        # deal more for no sets
+        if @game.deck.length > 0 && @game.sets.none?
+          deal_prompt "No sets!"
+          next
         end
 
         pos = @cursor
         # advance time by the expect half second.
         @game.time += 0.1
-
-        # Half second refresh cards. Has a nice side effect of animating card claims.
-        printCards
-        @game.deal
-
 
         case(ch)
         when Input::DOWN
@@ -155,13 +192,10 @@ class Board
             if @game.claim! @player, @hand
               # this is a set
               @hand.clear
-
-              @win.clear
-              message "Set found!"
-              printCards
+              deal_prompt "A Set!"
             else
+              modal "Oops, that's not a set. Press any key to continue."
               @hand.clear
-              message "That's not a set. Hints?"
             end
 
           when 2
@@ -175,28 +209,33 @@ class Board
           printCards
         when Input::ESCAPE
           return
-        else
-          ## give the AIs a turn
-          @game.AI.each.with_index do |ai, i|
-            set = @game.updateAI ai
-            if set
-              # the ai claimed a card, draw this for the user
-              @win.clear
-              # draw board with AI selection
-              printCards set, i
-              # let it sink in for a second
-              sleep(0.05)
-              # give the cards to the AI
-              @game.claim! ai, set
-              # draw the cleared cards
-              printCards
-              sleep(0.05)
-              # draw the delt cards
-              @game.deal
-              printCards
-              sleep(0.1)
+        when Input::HINT
+          #TODO: look at @game.sets for all sets
+          #TODO: inspect @hand for selected cards
+          #TODO: push an appropiate card into @hand
+          #TODO: Move @cursor[x,y]
+
+          # play the game for me hints
+          # also requires hand by empty to start, breaks if you have a hand already
+
+          if @hand.length < 3
+            # select first, makes it possible to not select the thrid card. This matters because the player needs to do it.
+            card = @game.sets.first[@hand.length]
+
+            # moves the highlight over the card
+            @cursor = card_position card
+            
+            # auto fill the first 2. Is as if selecting it
+            if @hand.length < 2
+              @hand.push card
             end
           end
+
+          # update the UI
+          printCards
+        else
+          #give the ai a turn
+          ai_turn
         end
 
         # use this for debugging keys
@@ -207,13 +246,45 @@ class Board
       end
     end
 
+    def ai_turn
+      if @game.AI.none?
+        return
+      end
+
+      ## give a random AI a turn. This slightly keeps the AIs from looking like clones
+      ai = @game.AI.sample
+      i = @game.AI.index ai
+      
+      set = @game.updateAI ai
+      if set
+        # the ai claimed a card, draw this for the user
+        
+        # make the player accpet it if not on impossible mode
+        modal "#{ai.name} found a set! Press any key to continue.", set, i
+
+        # give the cards to the AI
+        @game.claim! ai, set
+
+        # draw the board with the blanks for a half second
+        printCards
+        sleep 0.5
+
+        deal_more_cards
+      end
+    end
+
+    def card_position card
+      index = @game.cards.index card
+      return [(index / @cols), (index % @cols)]
+    end
+
     # print the cards,
     # highlight will draw a special color behind those cards.
     def printCards (highlights = [], ai = nil)
       draw_header
       cards = @game.cards
-      @win.move 0, 0
-      @win.addstr @game.sets.length.to_s
+      @win.move 1, 0
+      @win.addstr "Deck:[#{@game.deck.length.to_s}] Cards[#{@game.cards.length.to_s}] Sets:[#{@game.sets.length.to_s}]"
 
       winX = Ncurses.getmaxx(@win)
       winY = Ncurses.getmaxy(@win)
@@ -233,7 +304,7 @@ class Board
         x_pos = (col * @cardW) + (col + 1 % @n_cols)
 
         # is this cell under the cursor?
-        selected = row - @rowStart == @cursor[0] && col - @colStart == @cursor[1]
+        selected = @cursor && row - @rowStart == @cursor[0] && col - @colStart == @cursor[1]
         
         # draw the card
         drawCard card, y_pos, x_pos, selected, highlights.include?(card) ? ai : nil
@@ -252,7 +323,7 @@ class Board
         @win.clrtoeol
       end
 
-      @win.addstr "q to quit"
+      @win.addstr "q to quit, h for hints"
       Ncurses.refresh
     end
 

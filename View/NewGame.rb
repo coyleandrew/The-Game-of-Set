@@ -6,11 +6,21 @@ class NewGame < Menu
         super(window)
 
         @win = window
+        @game = nil
+    end
+
+    def get_header
+        return Graphics::UI_LOGO
+    end
+
+    def get_items
+        return generate_menu @game
     end
 
     def prompt! (game)
+        @game = game
         loop do
-            input = draw_menu generate_menu game
+            input = prompt
 
             if input.include? "Difficulity:"
                 game.difficulty = (game.difficulty + 1) % 4

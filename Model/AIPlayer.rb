@@ -21,13 +21,13 @@ class AIPlayer < Player
         # sleep time in seconds
         # random for a slight bit a variability
         if @difficulty == Difficulty::EASY
-            @sleepTime = (35..45)
+            @sleepTime = (35.0..45.0)
         elsif @difficulty == Difficulty::MEDIUM
-            @sleepTime = (15..27)
+            @sleepTime = (15.0..27.0)
         elsif @difficulty == Difficulty::HARD
-            @sleepTime = (7..11)
+            @sleepTime = (7.0..11.0)
         else
-            @sleepTime = (0.0..0.5)
+            @sleepTime = (1.0..3.5)
         end
     end
         
@@ -36,11 +36,11 @@ class AIPlayer < Player
     def executeTurn time
         ## return if sleeping
         lapsed = time - @last
-        @last += time
         if lapsed < rand(@sleepTime)
             # not time to claim yet
             return
         end
+        @last = time
 
         # Cheating, just take a known set
         return @game.sets.sample

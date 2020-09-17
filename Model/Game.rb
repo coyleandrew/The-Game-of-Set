@@ -4,18 +4,22 @@ require "IsASet"
 class Game
     def initialize
         reset
+
+        # defauls
+        @difficulty = 0
+        @playerName = "Player 1"
+        @players = 1
+
+        @dealCount = 0
     end
 
     def reset
         @deck = Array.new(81)
         @cards = []
         @AI = []
-        @difficulty = 0
-        @playerName = "Player 1"
-        @players = 1
         @time = 0
         @player = nil
-        @sets = []
+        @sets = nil
     end
 
     def newGame
@@ -34,6 +38,7 @@ class Game
 
         # deal the first cards
         deal
+        
     end
 
     # claim a collection of cards as a set.
@@ -51,7 +56,7 @@ class Game
             player.add(set)
 
             # return result
-            return success
+            return true
         end
 
         return false
@@ -68,11 +73,28 @@ class Game
 
     # Fill in missing cards
     def deal
-        ## assigns nil refenreces by popping a card from the deck
+        # pack cards past the default 12 into the begining
+        if @cards.length > 12
+            # cards still in play past the standard 12 positions
+            extra = @cards.last(@cards.length - 12).compact
+            # move what can be moved into the standard 12 positions
+            @cards = @cards.take(12).map! { |c| c || extra.pop }
+            # hopefully extra is empty now, but maybe not
+            @cards += extra
+        end
+
+        # sets is still valid as we haven't modified the combinaion of cards in play
+        # do we need to expand the cards in play?
+        if(@sets && @sets.none?)
+            @cards += Array.new(3)
+        end
+        
+        ## fill any gaps from the deck
         @cards.map! { |x| x || @deck.pop }
 
         # recompute sets
-        @sets = IsASet.sets @cards
+        #@sets = []
+        @sets = IsASet.sets @cards.compact
     end
 
     attr_accessor :difficulty

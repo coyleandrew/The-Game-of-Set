@@ -6,19 +6,32 @@ class Menu
         @win = window
         @selected = 0
 
+        @maxX = Ncurses.getmaxx(@win)
+        @maxY = Ncurses.getmaxy(@win)
+
         @team = Graphics::UI_TERAM_THREE
         @presents = Graphics::UI_PRESENTS
-        @logo = Graphics::UI_LOGO
+    end
+
+    def get_header
+        return Graphics::UI_LOGO
+    end
+
+    def get_items
+        return Menu::MENU_ITEMS
+    end
+
+    def resize
+        @maxX = Ncurses.getmaxx(@win)
+        @maxY = Ncurses.getmaxy(@win)
 
         # Center the screen
-        maxX = Ncurses.getmaxx(@win)
-        maxY = Ncurses.getmaxy(@win)
-        @width = @team[0].length
-        @height = @team.length + 1 + @presents.length + 1 + @logo.length
+        @width = get_header[0].length
+        @height = get_header.length + 3 + get_items.length * 2
 
         # Top left position to center the splash screen
-        @left = ((maxX - @width) / 2).floor
-        @top = ((maxY - @height) / 2).floor
+        @left = (@maxX - @width) / 2
+        @top = (@maxY - @height) / 2
     end
 
     def intro
@@ -28,6 +41,8 @@ class Menu
         x = @left
         y = @top
 
+        logo = get_header
+
         printArray x, y, @team, Ncurses.COLOR_PAIR(0)
         @win.refresh
         sleep(0.25)
@@ -36,7 +51,7 @@ class Menu
         @win.refresh
         sleep(0.5)
         y += @presents.length + 1
-        printArray x, y, @logo, Ncurses.COLOR_PAIR(0)
+        printArray x, y, logo, Ncurses.COLOR_PAIR(0)
         @win.refresh
         sleep(1.5)
 
@@ -44,8 +59,8 @@ class Menu
         loop do
             # draw the logo one line up
             y -= 1
-            printArray x, y, @logo, Ncurses.COLOR_PAIR(0)
-            @win.move(y + @logo.length, 0)
+            printArray x, y, logo, Ncurses.COLOR_PAIR(0)
+            @win.move(y + logo.length, 0)
             @win.clrtoeol
 
             @win.refresh
@@ -56,32 +71,41 @@ class Menu
     end
 
     def prompt
-        draw_menu Menu::MENU_ITEMS
+        resize
+        @win.clear
+        draw_menu get_items, get_header
     end
 
-    def draw_menu items
-        @win.clear
+    def draw_menu (items, header)
 
-        draw_options @selected, items
+        # Initial Draw
+        draw @selected, items, header
 
         while((ch = @win.getch()) != Ncurses::KEY_F1) do
 
             case(ch)
             when Input::DOWN
                 if @selected + 1 < items.length
-                    draw_options @selected += 1, items
+                    @selected += 1
                 else
-                    draw_options @selected = 0, items
+                    @selected = 0
                 end
             when Input::UP
                 if @selected -1 >= 0
-                    draw_options @selected -= 1, items
+                    @selected -= 1
                 else
-                    draw_options @selected = items.length - 1, items
+                    @selected = items.length - 1
                 end
             when Input::ENTER
                 return items[@selected]
             end
+            
+            # deal with window size changing
+            if @maxX != Ncurses.getmaxx(@win) || @maxY != Ncurses.getmaxy(@win)
+                resize
+            end
+
+            draw @selected, items, header
         end
         
     end
@@ -92,18 +116,19 @@ class Menu
         "Exit "
     ].freeze
 
+    # Position of a single menu item
     def menu_position (index, text)
-        y = @logo.length + 3 + index * 2
+        y = get_header.length + 3 + index * 2
         x = @left + ((@width - text.length) / 2).floor
         return [x, y]
     end
 
-    def draw_options (selected, items)
-        @win.clear
+    # draw the view
+    def draw (selected, items, header)
 
-        printArray @left, @top, @logo, Ncurses.COLOR_PAIR(0)
+        printArray @left, @top, header, Ncurses.COLOR_PAIR(0)
         
-        y = @logo.length + 3
+        y = @top + header.length + 1
         items.each.with_index(0) do |item, i|
             x = @left + ((@width - item.length) / 2).floor
 
